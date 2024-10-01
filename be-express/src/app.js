@@ -2,6 +2,7 @@ const express = require('express');
 const { sequelize } = require('./models');
 const customerRoutes = require('./routes/customer-routes');
 const foodRoutes = require('./routes/food-routes');
+const transactionRoutes = require('./routes/transaction-routes');
 require('dotenv').config();
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use('/api/v1/customers', customerRoutes);
 app.use('/api/v1/foods', foodRoutes);
+app.use('/api/v1/transactions', transactionRoutes);
 
 const startServer = async () => {
   try {
