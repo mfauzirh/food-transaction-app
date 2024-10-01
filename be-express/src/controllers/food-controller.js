@@ -1,9 +1,17 @@
 const { Food } = require('../models');
 
 const getAllFoods = async (req, res) => {
+  const { page = 1, pageSize = 10 } = req.query;
+  const offset = (page - 1) * pageSize;
   try {
-    const foods = await Food.findAll();
-    res.json(foods);
+    const {count, rows} = await Food.findAndCountAll({
+      limit: parseInt(pageSize, 10),
+      offset: parseInt(offset, 10),
+    });
+    res.json({
+      total: count,
+      data: rows
+    });
   } catch (error) {
     res.status(500).json({ error: "Error fetching foods", error });
   }
@@ -16,7 +24,7 @@ const getFoodById = async(req, res) => {
     if (!food) {
       return res.status(400).json({ error: "Food not found" });
     }
-    res.json(food);
+    res.json({data: food});
   } catch (error) {
     res.status(500).json({ error: "Error fetching foods", error });
   }
@@ -30,7 +38,7 @@ const createFood = async (req, res) => {
       food_price: foodPrice,
       food_stock: foodStock
     });
-    res.status(201).json(newFood);
+    res.status(201).json({data: newFood});
   } catch (error) {
     res.status(500).json({ error: "Error creating foods", error });
   }
@@ -48,7 +56,7 @@ const updateFood = async (req, res) => {
     food.food_price = foodPrice;
     food.food_stock = foodStock;
     await food.save();
-    res.json(food);
+    res.json({data: food});
   } catch (error) {
     res.status(500).json({ error: "Error updating foods", error });
   }
