@@ -1,0 +1,11 @@
+{
+  "name": "food-transaction-app",
+  "version": "1.0.0",
+  "description": "A REST API for food transaction app made with express js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mfauzirh",
+  "license": "ISC"
+}
