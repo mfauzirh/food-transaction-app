@@ -12,3 +12,8 @@ const updateCustomerValidation = [
   body('phone').isString().notEmpty().withMessage('Phone is required'),
   body('address').isString().notEmpty().withMessage('Address is required'),
 ];
+
+module.exports = {
+  createCustomerValidation,
+  updateCustomerValidation
+};

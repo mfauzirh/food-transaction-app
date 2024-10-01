@@ -14,7 +14,7 @@ const getCustomerById = async (req, res) => {
   try {
     const customer = await Customer.findByPk(id);
     if (!customer) {
-      res.status(404).json({error: "Customer not found"});
+      return res.status(404).json({error: "Customer not found"});
     }
     res.json(customer);
   } catch (error) {
@@ -39,7 +39,7 @@ const updateCustomer = async (req, res) => {
   try {
     const customer = await Customer.findByPk(id);
     if (!customer) {
-      res.status(404).json({error: 'Customer not found'});
+      return res.status(404).json({error: 'Customer not found'});
     }
     customer.name = name;
     customer.phone = phone;
@@ -56,7 +56,7 @@ const deleteCustomer = async (req, res) => {
   try {
     const customer = await Customer.findByPk(id);
     if (!customer) {
-      res.status(404).json({error: 'Customer not found'});
+      return res.status(404).json({error: 'Customer not found'});
     }
     await customer.destroy();
     res.status(204).json({});
