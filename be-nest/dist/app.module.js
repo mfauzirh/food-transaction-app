@@ -12,6 +12,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const customer_controller_1 = require("./modules/customer/customer.controller");
 const customer_service_1 = require("./modules/customer/customer.service");
 const customer_entity_1 = require("./modules/customer/customer.entity");
+const food_service_1 = require("./modules/food/food.service");
+const food_entity_1 = require("./modules/food/food.entity");
+const food_controller_1 = require("./modules/food/food.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -25,13 +28,13 @@ exports.AppModule = AppModule = __decorate([
                 username: 'postgres',
                 password: 'mysecretpassword',
                 database: 'food_transaction_app',
-                entities: [customer_entity_1.Customer],
+                entities: [customer_entity_1.Customer, food_entity_1.Food],
                 synchronize: true,
             }),
-            typeorm_1.TypeOrmModule.forFeature([customer_entity_1.Customer]),
+            typeorm_1.TypeOrmModule.forFeature([customer_entity_1.Customer, food_entity_1.Food]),
         ],
-        controllers: [customer_controller_1.CustomerController],
-        providers: [customer_service_1.CustomerService],
+        controllers: [customer_controller_1.CustomerController, food_controller_1.FoodController],
+        providers: [customer_service_1.CustomerService, food_service_1.FoodService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
