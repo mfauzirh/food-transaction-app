@@ -8,16 +8,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const customer_controller_1 = require("./modules/customer/customer.controller");
+const customer_service_1 = require("./modules/customer/customer.service");
+const customer_entity_1 = require("./modules/customer/customer.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        imports: [
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: 'localhost',
+                port: 5432,
+                username: 'postgres',
+                password: 'mysecretpassword',
+                database: 'food_transaction_app',
+                entities: [customer_entity_1.Customer],
+                synchronize: true,
+            }),
+            typeorm_1.TypeOrmModule.forFeature([customer_entity_1.Customer]),
+        ],
+        controllers: [customer_controller_1.CustomerController],
+        providers: [customer_service_1.CustomerService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
