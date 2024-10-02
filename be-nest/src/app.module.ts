@@ -7,6 +7,9 @@ import { Customer } from './modules/customer/customer.entity'; // Adjust the pat
 import { FoodService } from './modules/food/food.service';
 import { Food } from './modules/food/food.entity';
 import { FoodController } from './modules/food/food.controller';
+import { Transaction } from './modules/transaction/transaction.entity';
+import { TransactionService } from './modules/transaction/transaction.service';
+import { TransactionController } from './modules/transaction/transaction.controller';
 
 @Module({
   imports: [
@@ -17,12 +20,12 @@ import { FoodController } from './modules/food/food.controller';
       username: 'postgres',
       password: 'mysecretpassword',
       database: 'food_transaction_app',
-      entities: [Customer, Food],
+      entities: [Customer, Food, Transaction],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Customer, Food]),
+    TypeOrmModule.forFeature([Customer, Food, Transaction]),
   ],
-  controllers: [CustomerController, FoodController],
-  providers: [CustomerService, FoodService],
+  controllers: [CustomerController, FoodController, TransactionController],
+  providers: [CustomerService, FoodService, TransactionService],
 })
 export class AppModule {}

@@ -118,12 +118,17 @@ const updateTransaction = async (req, res) => {
       return res.status(404).json({ error: 'Food not found' });
     }
 
+    if (foodItem.food_stock < qty) {
+      return res.status(400).json({ error: "Insufficient stock available" });
+    }
+
     const previousQty = transaction.qty; 
     foodItem.food_stock += previousQty - qty;
 
     await foodItem.save({dbTransaction});
 
     transaction.qty = qty;
+    transaction.total_price = foodItem.food_price * qty;
     await transaction.save({dbTransaction});
 
     await dbTransaction.commit();
