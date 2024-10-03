@@ -17,8 +17,8 @@ const Transaction = require('./transaction')(sequelize);
 
 Customer.hasMany(Transaction, { foreignKey: 'customer_id', onDelete: 'CASCADE' });
 Food.hasMany(Transaction, { foreignKey: 'food_id', onDelete: 'CASCADE' });
-Transaction.belongsTo(Customer, { foreignKey: 'customer_id', onDelete: 'CASCADE' });
-Transaction.belongsTo(Food, { foreignKey: 'food_id', onDelete: 'CASCADE' });
+Transaction.belongsTo(Customer, { foreignKey: 'customer_id', as: 'customer', onDelete: 'CASCADE' });
+Transaction.belongsTo(Food, { foreignKey: 'food_id', as: 'food', onDelete: 'CASCADE' });
 
 module.exports = {
   sequelize,
