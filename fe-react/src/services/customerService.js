@@ -16,3 +16,8 @@ export const createCustomer = async (customer) => {
   const response = await axios.post(`${API_URL}`, customer);
   return response.data;
 }
+
+export const fetchCustomerById = async (customerId) => {
+  const response = await axios.get(`${API_URL}/${customerId}`);
+  return response.data;
+};

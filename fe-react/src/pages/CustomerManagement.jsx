@@ -1,8 +1,8 @@
 import { Button, Typography, Table, Pagination, Flex } from 'antd';
-import { createCustomer, fetchCustomers } from '../services/customerService';
+import { createCustomer, fetchCustomers, fetchCustomerById } from '../services/customerService';
 import { useEffect, useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import AddCustomerModal from '../components/AddCustomerModal';
+import CustomerModal from '../components/CustomerModal';
 
 const { Title } = Typography;
 
@@ -11,7 +11,9 @@ const CustomerManagement = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(5);
-  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [customerModal, setCustomerModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [currentCustomer, setCurrentCustomer] = useState(null);
 
   useEffect(() => {
     fetchCustomerData();
@@ -54,37 +56,65 @@ const CustomerManagement = () => {
       key: 'action',
       render: (_, record) => (
         <div>
-          <Button type="link" icon={<EyeOutlined />} onClick={() => handleDetail(record.customer_id)} />
-          <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }} onClick={() => handleEdit(record.customer_id)} />
-          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.customer_id)} />
+          <Button type="link" icon={<EyeOutlined />} />
+          <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }} onClick={() => openEditModal(record)} />
+          <Button type="link" danger icon={<DeleteOutlined />} />
         </div>
       ),
     },
   ];
 
   const handleAddCustomer = async (values) => {
+    console.log("Add customer:", values);
     try {
       await createCustomer(values);
-      setAddModalVisible(false);
+      setCustomerModal(false);
       await fetchCustomerData();
     } catch (error) {
-      console.error("Failed to fetch customer data:", error);
+      console.error("Failed to create customer:", error);
     }
-  }
-
-  const handleDetail = (id) => {
-    console.log("Detail clicked for customer ID:", id);
-    // Trigger modal for details (to be implemented later)
   };
 
-  const handleEdit = (id) => {
-    console.log("Edit clicked for customer ID:", id);
-    // Trigger modal for editing (to be implemented later)
+  const handleEditCustomer = async (values) => {
+    console.log("Edit customer:", values);
+    try {
+      // Call API to update customer
+      // await updateCustomer(currentCustomer.customer_id, values); // Uncomment this line and implement the API call
+      setCustomerModal(false);
+      await fetchCustomerData();
+    } catch (error) {
+      console.error("Failed to update customer:", error);
+    }
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete clicked for customer ID:", id);
-    // Trigger modal for deletion confirmation (to be implemented later)
+  const handleSubmit = (values) => {
+    if (isEdit) {
+      handleEditCustomer(values);
+    } else {
+      handleAddCustomer(values);
+    }
+  };
+
+  const openAddModal = () => {
+    setIsEdit(false);
+    setCurrentCustomer(null);
+    setCustomerModal(true);
+  };
+
+  const openEditModal = async (customer) => {
+    setIsEdit(true);
+    setCustomerModal(true);
+    try {
+      const customerData = await fetchCustomerById(customer.customer_id);
+      setCurrentCustomer(customerData.data);
+    } catch (error) {
+      console.error("Failed to fetch customer data for edit:", error);
+    }
+  };
+
+  const handleModalClose = () => {
+    setCustomerModal(false);
+    setCurrentCustomer(null);
   };
 
   return (
@@ -93,7 +123,7 @@ const CustomerManagement = () => {
         <Title level={2} style={{ marginBottom: '16px' }}>
           Customer Management
         </Title>
-        <Button type="primary" style={{ marginBottom: '16px' }} onClick={() => setAddModalVisible(true)}>
+        <Button type="primary" style={{ marginBottom: '16px' }} onClick={openAddModal}>
           Add Customer
         </Button>
       </Flex>
@@ -116,13 +146,15 @@ const CustomerManagement = () => {
         />
       </Flex>
 
-      <AddCustomerModal
-        open={addModalVisible}
-        onCreate={handleAddCustomer}
-        onCancel={() => setAddModalVisible(false)}
+      <CustomerModal
+        open={customerModal}
+        onSubmit={handleSubmit}
+        onCancel={handleModalClose}
+        initialValues={currentCustomer}
+        isEdit={isEdit}
       />
     </div>
   );
-}
+};
 
 export default CustomerManagement;
