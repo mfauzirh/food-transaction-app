@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Table, Typography, Button, Pagination, Flex } from 'antd';
-import { fetchTransactionById, fetchTransactions } from '../services/transactionService';
+import { deleteTransaction, fetchTransactionById, fetchTransactions } from '../services/transactionService';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import TransactionDetailModal from '../components/transaction/TransactionDetailModal';
+import TransactionDeleteModal from '../components/transaction/TransactionDeleteModal';
 
 const { Title } = Typography;
 
@@ -13,6 +14,8 @@ const TransactionManagement = () => {
   const [pageSize] = useState(5);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
 
   useEffect(() => {
     fetchTransactionData();
@@ -71,7 +74,7 @@ const TransactionManagement = () => {
             <div>
                 <Button type="link" icon={<EyeOutlined />} onClick={() => openDetailModal(record)} />
                 <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }}/>
-                <Button type="link" danger icon={<DeleteOutlined />} />
+                <Button type="link" danger icon={<DeleteOutlined />} onClick={() => openDeleteModal(record)}  />
             </div>
         ),
     },
@@ -91,6 +94,27 @@ const TransactionManagement = () => {
   const closeDetailModal = () => {
     setDetailModalVisible(false);
     setSelectedTransaction(null);
+  };
+
+  const openDeleteModal = (transaction) => {
+    setSelectedTransaction(transaction);
+    setDeleteModalVisible(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalVisible(false);
+    setSelectedTransaction(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const foodId = selectedTransaction.id;
+      await deleteTransaction(foodId);
+      closeDeleteModal();
+      await fetchTransactionData();
+    } catch (error) {
+      console.error("Failed to delete food:", error);
+    }
   };
 
   return (
@@ -126,6 +150,15 @@ const TransactionManagement = () => {
           onCancel={closeDetailModal}
           transactionDetails={selectedTransaction}
         />
+
+      <TransactionDeleteModal
+        open={deleteModalVisible}
+        onCancel={closeDeleteModal}
+        onDelete={handleDelete}
+        transactionId={selectedTransaction?.id}
+        customerName={selectedTransaction?.customer?.name}
+        foodName={selectedTransaction?.food?.name}
+      />
     </div>
   );
 };
