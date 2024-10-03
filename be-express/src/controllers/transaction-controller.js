@@ -59,17 +59,16 @@ const createTransaction = async (req, res) => {
       return res.status(404).json({ error: 'Food not found' });
     }
 
-    if (food.food_stock < qty) {
+    if (food.stock < qty) {
       return res.status(400).json({ error: "Insufficient stock available" });
     }
 
-    const totalPrice = food.food_price * qty;
+    const totalPrice = food.price * qty;
     const newOrderTransaction = await Transaction.create(
       { 
         customer_id: customerId, 
         food_id: foodId,
         qty: qty, 
-        totalPrice: totalPrice,
         total_price: totalPrice,
         transaction_date: new Date(),
       },
@@ -78,7 +77,7 @@ const createTransaction = async (req, res) => {
       }
     );
 
-    food.food_stock -= qty;
+    food.stock -= qty;
     await food.save({dbTransaction});
 
     await dbTransaction.commit();
@@ -118,17 +117,17 @@ const updateTransaction = async (req, res) => {
       return res.status(404).json({ error: 'Food not found' });
     }
 
-    if (foodItem.food_stock < qty) {
+    if (foodItem.stock < qty) {
       return res.status(400).json({ error: "Insufficient stock available" });
     }
 
     const previousQty = transaction.qty; 
-    foodItem.food_stock += previousQty - qty;
+    foodItem.stock += previousQty - qty;
 
     await foodItem.save({dbTransaction});
 
     transaction.qty = qty;
-    transaction.total_price = foodItem.food_price * qty;
+    transaction.total_price = foodItem.price * qty;
     await transaction.save({dbTransaction});
 
     await dbTransaction.commit();
