@@ -80,7 +80,7 @@ const CustomerManagement = () => {
 
   const handleEditCustomer = async (values) => {
     try {
-      const customerId = currentCustomer.customer_id;
+      const customerId = currentCustomer.id;
       await updateCustomer(customerId, values);
       setCustomerModal(false);
       await fetchCustomerData();
@@ -99,7 +99,7 @@ const CustomerManagement = () => {
 
   const handleDeleteCustomer = async () => {
     try {
-      const customerId = currentCustomer.customer_id;
+      const customerId = currentCustomer.id;
       await deleteCustomer(customerId);
       setDeleteModal(false);
       await fetchCustomerData();
@@ -118,7 +118,7 @@ const CustomerManagement = () => {
     setIsEdit(true);
     setCustomerModal(true);
     try {
-      const customerData = await fetchCustomerById(customer.customer_id);
+      const customerData = await fetchCustomerById(customer.id);
       setCurrentCustomer(customerData.data);
     } catch (error) {
       console.error("Failed to fetch customer data for edit:", error);
@@ -128,7 +128,7 @@ const CustomerManagement = () => {
   const openDetailModal = async (customer) => {
     setDetailModal(true);
     try {
-      const customerData = await fetchCustomerById(customer.customer_id);
+      const customerData = await fetchCustomerById(customer.id);
       setCurrentCustomer(customerData.data);
     } catch (error) {
       console.error("Failed to fetch customer details:", error);
@@ -171,7 +171,7 @@ const CustomerManagement = () => {
         columns={columns} 
         pagination={false} 
         scroll={{ x: 'max-content' }}
-        rowKey="customer_id"
+        rowKey="id"
       />
 
       <Flex justify='center'>

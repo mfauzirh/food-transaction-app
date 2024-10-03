@@ -11,7 +11,7 @@ const CustomerDetailModal = ({ open, onCancel, customer }) => {
     >
       {customer && (
         <Descriptions bordered column={1}>
-          <Descriptions.Item label="Customer Id">{customer.customer_id}</Descriptions.Item>
+          <Descriptions.Item label="Customer Id">{customer.id}</Descriptions.Item>
           <Descriptions.Item label="Name">{customer.name}</Descriptions.Item>
           <Descriptions.Item label="Phone">{customer.phone}</Descriptions.Item>
           <Descriptions.Item label="Address">{customer.address}</Descriptions.Item>
