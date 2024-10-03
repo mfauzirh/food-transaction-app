@@ -1,8 +1,10 @@
 import { Button, Typography, Table, Pagination, Flex } from 'antd';
-import { createCustomer, fetchCustomers, fetchCustomerById, updateCustomer } from '../services/customerService';
+import { createCustomer, fetchCustomers, fetchCustomerById, updateCustomer, deleteCustomer } from '../services/customerService';
 import { useEffect, useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import CustomerModal from '../components/CustomerModal';
+import CustomerDetailModal from '../components/CustomerDetailModal';
+import CustomerDeleteModal from '../components/CustomerDeleteModal';
 
 const { Title } = Typography;
 
@@ -14,6 +16,8 @@ const CustomerManagement = () => {
   const [customerModal, setCustomerModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
+  const [detailModal, setDetailModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   useEffect(() => {
     fetchCustomerData();
@@ -56,9 +60,9 @@ const CustomerManagement = () => {
       key: 'action',
       render: (_, record) => (
         <div>
-          <Button type="link" icon={<EyeOutlined />} />
+          <Button type="link" icon={<EyeOutlined />} onClick={() => openDetailModal(record)} />
           <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }} onClick={() => openEditModal(record)} />
-          <Button type="link" danger icon={<DeleteOutlined />} />
+          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => openDeleteModal(record)} />
         </div>
       ),
     },
@@ -93,6 +97,17 @@ const CustomerManagement = () => {
     }
   };
 
+  const handleDeleteCustomer = async () => {
+    try {
+      const customerId = currentCustomer.customer_id;
+      await deleteCustomer(customerId);
+      setDeleteModal(false);
+      await fetchCustomerData();
+    } catch (error) {
+      console.error("Failed to delete customer:", error);
+    }
+  };
+
   const openAddModal = () => {
     setIsEdit(false);
     setCurrentCustomer(null);
@@ -110,8 +125,33 @@ const CustomerManagement = () => {
     }
   };
 
+  const openDetailModal = async (customer) => {
+    setDetailModal(true);
+    try {
+      const customerData = await fetchCustomerById(customer.customer_id);
+      setCurrentCustomer(customerData.data);
+    } catch (error) {
+      console.error("Failed to fetch customer details:", error);
+    }
+  };
+
+  const openDeleteModal = (customer) => {
+    setCurrentCustomer(customer);
+    setDeleteModal(true);
+  };
+
   const handleModalClose = () => {
     setCustomerModal(false);
+    setCurrentCustomer(null);
+  };
+
+  const handleDetailModalClose = () => {
+    setDetailModal(false);
+    setCurrentCustomer(null);
+  };
+
+  const handleDeleteModalClose = () => {
+    setDeleteModal(false);
     setCurrentCustomer(null);
   };
 
@@ -150,6 +190,19 @@ const CustomerManagement = () => {
         onCancel={handleModalClose}
         initialValues={currentCustomer}
         isEdit={isEdit}
+      />
+
+      <CustomerDetailModal
+        open={detailModal}
+        onCancel={handleDetailModalClose}
+        customer={currentCustomer}
+      />
+
+      <CustomerDeleteModal
+        open={deleteModal}
+        onCancel={handleDeleteModalClose}
+        onDelete={handleDeleteCustomer}
+        customerName={currentCustomer?.name}
       />
     </div>
   );
