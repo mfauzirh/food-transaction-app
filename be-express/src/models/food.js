@@ -2,22 +2,26 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   return sequelize.define('Food', {
-    food_id: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      field: 'food_id'
     },
-    food_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
+      field: 'food_name'
     },
-    food_price: {
+    price: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: 'food_price'
     },
-    food_stock: {
+    stock: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: 'food_stock'
     },
   }, {
     tableName: 'foods',

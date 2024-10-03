@@ -31,12 +31,12 @@ const getFoodById = async(req, res) => {
 };
 
 const createFood = async (req, res) => {
-  const { foodName, foodPrice, foodStock } = req.body;
+  const { name, price, stock } = req.body;
   try {
     const newFood = await Food.create({
-      food_name: foodName,
-      food_price: foodPrice,
-      food_stock: foodStock
+      name: name,
+      price: price,
+      stock: stock
     });
     res.status(201).json({data: newFood});
   } catch (error) {
@@ -46,15 +46,15 @@ const createFood = async (req, res) => {
 
 const updateFood = async (req, res) => {
   const { id } = req.params;
-  const { foodName, foodPrice, foodStock } = req.body;
+  const { name, price, stock } = req.body;
   try {
     const food = await Food.findByPk(id);
     if (!food) {
       return res.status(400).json({ error: "Food not found" });
     }
-    food.food_name = foodName;
-    food.food_price = foodPrice;
-    food.food_stock = foodStock;
+    food.name = name;
+    food.price = price;
+    food.stock = stock;
     await food.save();
     res.json({data: food});
   } catch (error) {
