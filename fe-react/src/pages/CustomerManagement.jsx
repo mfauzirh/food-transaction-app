@@ -1,5 +1,5 @@
 import { Button, Typography, Table, Pagination, Flex } from 'antd';
-import { createCustomer, fetchCustomers, fetchCustomerById } from '../services/customerService';
+import { createCustomer, fetchCustomers, fetchCustomerById, updateCustomer } from '../services/customerService';
 import { useEffect, useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import CustomerModal from '../components/CustomerModal';
@@ -65,7 +65,6 @@ const CustomerManagement = () => {
   ];
 
   const handleAddCustomer = async (values) => {
-    console.log("Add customer:", values);
     try {
       await createCustomer(values);
       setCustomerModal(false);
@@ -76,10 +75,9 @@ const CustomerManagement = () => {
   };
 
   const handleEditCustomer = async (values) => {
-    console.log("Edit customer:", values);
     try {
-      // Call API to update customer
-      // await updateCustomer(currentCustomer.customer_id, values); // Uncomment this line and implement the API call
+      const customerId = currentCustomer.customer_id;
+      await updateCustomer(customerId, values);
       setCustomerModal(false);
       await fetchCustomerData();
     } catch (error) {
