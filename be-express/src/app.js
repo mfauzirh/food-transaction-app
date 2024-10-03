@@ -3,10 +3,13 @@ const { sequelize } = require('./models');
 const customerRoutes = require('./routes/customer-routes');
 const foodRoutes = require('./routes/food-routes');
 const transactionRoutes = require('./routes/transaction-routes');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 app.use(express.json());
 
