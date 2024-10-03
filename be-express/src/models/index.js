@@ -15,10 +15,10 @@ const Customer = require('./customer')(sequelize);
 const Food = require('./food')(sequelize);
 const Transaction = require('./transaction')(sequelize);
 
-Customer.hasMany(Transaction, { foreignKey: 'customer_id' });
-Food.hasMany(Transaction, { foreignKey: 'food_id' });
-Transaction.belongsTo(Customer, { foreignKey: 'customer_id' });
-Transaction.belongsTo(Food, { foreignKey: 'food_id' });
+Customer.hasMany(Transaction, { foreignKey: 'customer_id', onDelete: 'CASCADE' });
+Food.hasMany(Transaction, { foreignKey: 'food_id', onDelete: 'CASCADE' });
+Transaction.belongsTo(Customer, { foreignKey: 'customer_id', onDelete: 'CASCADE' });
+Transaction.belongsTo(Food, { foreignKey: 'food_id', onDelete: 'CASCADE' });
 
 module.exports = {
   sequelize,
