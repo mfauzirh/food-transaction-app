@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Table, Typography, Button, Pagination, Flex } from 'antd';
-import { deleteTransaction, fetchTransactionById, fetchTransactions } from '../services/transactionService';
+import { deleteTransaction, fetchTransactionById, fetchTransactions, updateTransaction } from '../services/transactionService';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import TransactionDetailModal from '../components/transaction/TransactionDetailModal';
 import TransactionDeleteModal from '../components/transaction/TransactionDeleteModal';
+import TransactionEditModal from '../components/transaction/TransactionEditModal';
 
 const { Title } = Typography;
 
@@ -15,7 +16,7 @@ const TransactionManagement = () => {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   useEffect(() => {
     fetchTransactionData();
@@ -73,7 +74,7 @@ const TransactionManagement = () => {
         render: (_, record) => (
             <div>
                 <Button type="link" icon={<EyeOutlined />} onClick={() => openDetailModal(record)} />
-                <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }}/>
+                <Button type="link" icon={<EditOutlined />} style={{ color: 'orange' }}  onClick={() => openEditModal(record)}/>
                 <Button type="link" danger icon={<DeleteOutlined />} onClick={() => openDeleteModal(record)}  />
             </div>
         ),
@@ -117,6 +118,26 @@ const TransactionManagement = () => {
     }
   };
 
+  const openEditModal = (transaction) => {
+    setSelectedTransaction(transaction);
+    setEditModalVisible(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalVisible(false);
+    setSelectedTransaction(null);
+  };
+
+  const handleEdit = async (quantity) => {
+    try {
+        await updateTransaction(selectedTransaction.id, quantity);
+        closeEditModal();
+        await fetchTransactionData();
+    } catch (error) {
+        console.error("Failed to update quantity:", error);
+    }
+  };
+
   return (
     <div>
         <Flex gap="middle" align='end'>
@@ -132,7 +153,7 @@ const TransactionManagement = () => {
             dataSource={transactions}
             columns={columns}
             pagination={false}
-            rowKey="transaction_id"
+            rowKey="id"
         />
 
         <Flex justify='center'>
@@ -158,6 +179,14 @@ const TransactionManagement = () => {
         transactionId={selectedTransaction?.id}
         customerName={selectedTransaction?.customer?.name}
         foodName={selectedTransaction?.food?.name}
+      />
+
+      <TransactionEditModal
+        open={editModalVisible}
+        onSubmit={handleEdit}
+        onCancel={closeEditModal}
+        initialValues={{ qty: selectedTransaction?.qty }}
+        isEdit={true}
       />
     </div>
   );
