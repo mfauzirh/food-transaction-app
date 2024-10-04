@@ -15,18 +15,16 @@ export class CustomerService {
   async findAll(
     page: number = 1,
     pageSize: number = 10,
-    name?: string, // Add the optional name parameter
+    name?: string,
   ): Promise<{ total: number; data: Customer[] }> {
     const queryBuilder = this.customerRepository.createQueryBuilder('customer');
 
-    // If name is provided, add a case-insensitive search condition
     if (name) {
       queryBuilder.where('LOWER(customer.name) LIKE LOWER(:name)', {
-        name: `%${name}%`, // Use LIKE for partial matches
+        name: `%${name}%`,
       });
     }
 
-    // Get the data and total count
     const [data, total] = await queryBuilder
       .take(pageSize)
       .skip((page - 1) * pageSize)

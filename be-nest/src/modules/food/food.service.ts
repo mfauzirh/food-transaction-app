@@ -20,13 +20,23 @@ export class FoodService {
   async findAll(
     page: number = 1,
     pageSize: number = 10,
-  ): Promise<{ count: number; data: Food[] }> {
-    const [data, total] = await this.foodRepository.findAndCount({
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-    });
+    name?: string,
+  ): Promise<{ total: number; data: Food[] }> {
+    const queryBuilder = this.foodRepository.createQueryBuilder('food');
+
+    if (name) {
+      queryBuilder.where('LOWER(food.name) LIKE :name', {
+        name: `%${name.toLowerCase()}%`,
+      });
+    }
+
+    const [data, total] = await queryBuilder
+      .take(pageSize)
+      .skip((page - 1) * pageSize)
+      .getManyAndCount();
+
     return {
-      count: total,
+      total,
       data,
     };
   }

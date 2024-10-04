@@ -7,13 +7,13 @@ export class Food {
   id: number;
 
   @Column({ name: 'food_name' })
-  foodName: string;
+  name: string;
 
   @Column({ name: 'food_price' })
-  foodPrice: number;
+  price: number;
 
   @Column({ name: 'food_stock' })
-  foodStock: number;
+  stock: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.food)
   transactions: Transaction[];

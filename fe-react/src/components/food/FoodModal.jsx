@@ -45,6 +45,10 @@ const FoodModal = ({ open, onSubmit, onCancel, initialValues, isEdit }) => {
           name="price"
           label="Price"
           rules={[{ required: true, message: 'Please input the price!' }]}
+          onChange={(e) => {
+            const value = e.target.value;
+            form.setFieldsValue({ price: value ? Number(value) : null });
+          }}
         >
           <Input type="number" />
         </Form.Item>
@@ -52,6 +56,10 @@ const FoodModal = ({ open, onSubmit, onCancel, initialValues, isEdit }) => {
           name="stock"
           label="Stock"
           rules={[{ required: true, message: 'Please input the food stock!' }]}
+          onChange={(e) => {
+            const value = e.target.value;
+            form.setFieldsValue({ stock: value ? Number(value) : null });
+          }}
         >
           <Input type="number" />
         </Form.Item>

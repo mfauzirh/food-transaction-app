@@ -37,7 +37,7 @@ export class TransactionService {
           throw new NotFoundException('Customer not found');
         }
 
-        if (foodItem.foodStock < createTransactionDto.qty) {
+        if (foodItem.stock < createTransactionDto.qty) {
           throw new BadRequestException('Insufficient stock');
         }
 
@@ -45,11 +45,11 @@ export class TransactionService {
           customer,
           food: foodItem,
           qty: createTransactionDto.qty,
-          totalPrice: foodItem.foodPrice * createTransactionDto.qty,
+          totalPrice: foodItem.price * createTransactionDto.qty,
           transactionDate: new Date(),
         });
 
-        foodItem.foodStock -= createTransactionDto.qty;
+        foodItem.stock -= createTransactionDto.qty;
         await entityManager.save(Food, foodItem);
 
         return await entityManager.save(Transaction, transaction);
@@ -106,15 +106,15 @@ export class TransactionService {
           throw new NotFoundException('Food not found');
         }
 
-        if (foodItem.foodStock < updateTransactionDto.qty) {
+        if (foodItem.stock < updateTransactionDto.qty) {
           throw new BadRequestException('Insufficient stock');
         }
 
         const previousQty = transaction.qty;
-        foodItem.foodStock += previousQty - updateTransactionDto.qty;
+        foodItem.stock += previousQty - updateTransactionDto.qty;
 
         transaction.qty = updateTransactionDto.qty;
-        transaction.totalPrice = foodItem.foodPrice * updateTransactionDto.qty;
+        transaction.totalPrice = foodItem.price * updateTransactionDto.qty;
 
         await entityManager.save(Food, foodItem);
         return await entityManager.save(Transaction, transaction);
@@ -142,7 +142,7 @@ export class TransactionService {
           throw new NotFoundException('Food not found');
         }
 
-        foodItem.foodStock += transaction.qty;
+        foodItem.stock += transaction.qty;
 
         await entityManager.save(Food, foodItem);
 

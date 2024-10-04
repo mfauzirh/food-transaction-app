@@ -3,13 +3,13 @@ import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 export class CreateFoodDto {
   @IsString()
   @IsNotEmpty()
-  foodName: string;
+  name: string;
 
   @IsNumber()
   @IsPositive()
-  foodPrice: number;
+  price: number;
 
   @IsNumber()
   @IsPositive()
-  foodStock: number;
+  stock: number;
 }
