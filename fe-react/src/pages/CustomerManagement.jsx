@@ -2,9 +2,9 @@ import { Button, Typography, Table, Pagination, Flex } from 'antd';
 import { createCustomer, fetchCustomers, fetchCustomerById, updateCustomer, deleteCustomer } from '../services/customerService';
 import { useEffect, useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import CustomerModal from '../components/CustomerModal';
-import CustomerDetailModal from '../components/CustomerDetailModal';
-import CustomerDeleteModal from '../components/CustomerDeleteModal';
+import CustomerModal from '../components/customer/CustomerModal';
+import CustomerDetailModal from '../components/customer/CustomerDetailModal';
+import CustomerDeleteModal from '../components/customer/CustomerDeleteModal';
 
 const { Title } = Typography;
 
