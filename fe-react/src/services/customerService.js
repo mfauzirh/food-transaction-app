@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/v1/customers";
+const API_URL = "http://localhost:3001/api/v1/customers";
 
 export const fetchCustomers = async (page, pageSize, name) => {
   const params = new URLSearchParams({ page, pageSize });
