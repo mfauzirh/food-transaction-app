@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Table, Typography, Button, Pagination, Flex } from 'antd';
-import { deleteTransaction, fetchTransactionById, fetchTransactions, updateTransaction } from '../services/transactionService';
+import { createTransaction, deleteTransaction, fetchTransactionById, fetchTransactions, updateTransaction } from '../services/transactionService';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import TransactionDetailModal from '../components/transaction/TransactionDetailModal';
 import TransactionDeleteModal from '../components/transaction/TransactionDeleteModal';
 import TransactionEditModal from '../components/transaction/TransactionEditModal';
+import TransactionAddModal from '../components/transaction/TransactionAddModal';
 
 const { Title } = Typography;
 
@@ -17,6 +18,7 @@ const TransactionManagement = () => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
 
   useEffect(() => {
     fetchTransactionData();
@@ -138,13 +140,31 @@ const TransactionManagement = () => {
     }
   };
 
+  const openTransactionModal = () => {
+    setTransactionModalVisible(true);
+  };
+  
+  const closeTransactionModal = () => {
+    setTransactionModalVisible(false);
+  };
+  
+  const handleTransactionSubmit = async (values) => {
+    try {
+      await createTransaction(values);
+      closeTransactionModal();
+      await fetchTransactionData();
+    } catch (error) {
+        console.error("Failed to update quantity:", error);
+    }    
+  };
+
   return (
     <div>
         <Flex gap="middle" align='end'>
             <Title level={2} style={{ marginBottom: '16px' }}>
                 Transaction Management
             </Title>
-            <Button type="primary" style={{ marginBottom: '16px' }}>
+            <Button type="primary" style={{ marginBottom: '16px' }} onClick={openTransactionModal}>
                 Add Transaction
             </Button>
         </Flex>
@@ -188,6 +208,12 @@ const TransactionManagement = () => {
         initialValues={{ qty: selectedTransaction?.qty }}
         isEdit={true}
       />
+
+    <TransactionAddModal
+      open={transactionModalVisible}
+      onSubmit={handleTransactionSubmit}
+      onCancel={closeTransactionModal}
+    />
     </div>
   );
 };
