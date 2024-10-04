@@ -9,6 +9,7 @@ import {
   Param,
   Put,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -23,15 +24,15 @@ export class TransactionController {
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createTransactionDto: CreateTransactionDto,
-  ): Promise<Transaction> {
-    return await this.transactionService.create(createTransactionDto);
+  ): Promise<{ data: Transaction }> {
+    return { data: await this.transactionService.create(createTransactionDto) };
   }
 
   @Get()
   async findAll(
     @Query('page') page: string = '1',
     @Query('pageSize') pageSize: string = '10',
-  ): Promise<{ count: number; data: Transaction[] }> {
+  ): Promise<{ total: number; data: Transaction[] }> {
     return await this.transactionService.findAll(
       parseInt(page, 10),
       parseInt(pageSize, 10),
@@ -39,20 +40,23 @@ export class TransactionController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number): Promise<Transaction> {
-    return this.transactionService.findById(id);
+  async findById(@Param('id') id: number): Promise<{ data: Transaction }> {
+    return { data: await this.transactionService.findById(id) };
   }
 
   @Put(':id')
   async update(
     @Param('id') id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
-  ): Promise<Transaction> {
-    return await this.transactionService.update(id, updateTransactionDto);
+  ): Promise<{ data: Transaction }> {
+    return {
+      data: await this.transactionService.update(id, updateTransactionDto),
+    };
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<void> {
+  async delete(@Param('id') id: number, @Res() res): Promise<void> {
     await this.transactionService.delete(id);
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 }

@@ -38,6 +38,10 @@ const TransactionEditModal = ({ open, onSubmit, onCancel, initialValues, isEdit 
           name="qty"
           label="Quantity"
           rules={[{ required: true, message: 'Please input the quantity!' }]}
+          onChange={(e) => {
+            const value = e.target.value;
+            form.setFieldsValue({ qty: value ? Number(value) : null });
+          }}
         >
           <Input type="number" />
         </Form.Item>

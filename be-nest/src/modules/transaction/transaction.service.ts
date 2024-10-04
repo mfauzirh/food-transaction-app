@@ -60,14 +60,14 @@ export class TransactionService {
   async findAll(
     page: number = 1,
     pageSize: number = 10,
-  ): Promise<{ count: number; data: Transaction[] }> {
+  ): Promise<{ total: number; data: Transaction[] }> {
     const [data, total] = await this.transactionRepository.findAndCount({
       take: pageSize,
       skip: (page - 1) * pageSize,
       relations: ['food', 'customer'],
     });
     return {
-      count: total,
+      total,
       data,
     };
   }
