@@ -23,10 +23,12 @@ export class CustomerController {
   async findAll(
     @Query('page') page: string = '1',
     @Query('pageSize') pageSize: string = '10',
-  ): Promise<{ count: number; data: Customer[] }> {
+    @Query('name') name?: string,
+  ): Promise<{ total: number; data: Customer[] }> {
     return this.customerService.findAll(
       parseInt(page, 10),
       parseInt(pageSize, 10),
+      name,
     );
   }
 
@@ -34,22 +36,22 @@ export class CustomerController {
   async create(
     @Body() customerDto: CreateCustomerDto,
     @Res() res,
-  ): Promise<Customer> {
+  ): Promise<{ data: Customer[] }> {
     const customer = await this.customerService.create(customerDto);
-    return res.status(HttpStatus.CREATED).json(customer);
+    return res.status(HttpStatus.CREATED).json({ data: customer });
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number): Promise<Customer> {
-    return this.customerService.findById(id);
+  async findById(@Param('id') id: number): Promise<{ data: Customer }> {
+    return { data: await this.customerService.findById(id) };
   }
 
   @Put(':id')
   async update(
     @Param('id') id: number,
     @Body() customerDto: UpdateCustomerDto,
-  ): Promise<Customer> {
-    return this.customerService.update(id, customerDto);
+  ): Promise<{ data: Customer }> {
+    return { data: await this.customerService.update(id, customerDto) };
   }
 
   @Delete(':id')
