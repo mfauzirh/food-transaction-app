@@ -2,9 +2,9 @@ pipeline {
     agent any 
 
     stages {
-        stage('Test Webhook') {
+        stage('Hello World') {
             steps {
-                echo 'GitHub Webhook triggered!'
+                echo 'Hello Jenkins'
             }
         }
     }
